@@ -6,7 +6,7 @@
                 <span>There are 4 total invoices</span>
             </div>
             <div class="right flex">
-                <div class="filter flex" ref="filter" @click="toggleFilterMenu">
+                <div class="filter flex" @click="toggleFilterMenu">
                     <span>Filter by status</span>
                     <img src="@/assets/icon-arrow-down.svg" alt="">
                     <ul class="filter-menu" v-show="filterMenu">
@@ -31,9 +31,17 @@
 export default {
     name: "Home",
     data: () => ({
-        filterMenu:null
+        filterMenu: null
     }),
     components: {},
+    methods: {
+        newInvoice() {
+        },
+
+        toggleFilterMenu() {
+            this.filterMenu = !this.filterMenu
+        }
+    }
 };
 </script>
 
@@ -63,10 +71,7 @@ export default {
             .filter {
                 position: relative;
                 margin-right: 40px;
-
-                span, img {
-                    pointer-events: none;
-                }
+                cursor: pointer;
 
                 img {
                     margin-left: 12px;
