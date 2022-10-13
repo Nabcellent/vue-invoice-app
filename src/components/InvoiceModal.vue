@@ -58,6 +58,66 @@
                     </div>
                 </div>
             </div>
+
+            <div class="invoice-work flex flex-column">
+                <div class="payment flex">
+                    <div class="input flex flex-column">
+                        <label for="invoice-date">Invoice Date</label>
+                        <input type="text" required id="invoice-date" v-model="invoiceDate" disabled>
+                    </div>
+                    <div class="input flex flex-column">
+                        <label for="payment-due-date">Payment Due</label>
+                        <input type="text" required id="payment-due-date" v-model="paymentDueDate" disabled>
+                    </div>
+                </div>
+
+                <div class="input flex flex-column">
+                    <label for="payment-terms">Payment Terms</label>
+                    <select required id="payment-terms" v-model="paymentTerms">
+                        <option value="30">Net 30 days</option>
+                        <option value="60">Net 60 days</option>
+                    </select>
+                </div>
+                <div class="input flex flex-column">
+                    <label for="product-description">Product Description</label>
+                    <input type="text" required id="product-description" v-model="productDescription">
+                </div>
+
+                <div class="work-items">
+                    <h3>Item List</h3>
+                    <table class="item-list">
+                        <tr class="table-heading flex">
+                            <th class="name">Item Name</th>
+                            <th class="qty">Qty</th>
+                            <th class="price">Price</th>
+                            <th class="total">Total</th>
+                        </tr>
+
+                        <tr class="table-items flex" v-for="(item, i) in invoiceItemList" :key="i">
+                            <td class="name"><input type="text" v-model="item.name"></td>
+                            <td class="qty"><input type="text" v-model="item.qty"></td>
+                            <td class="price"><input type="text" v-model="item.price"></td>
+                            <td class="total flex">KES{{ (item.total = item.qty * item.price) }}</td>
+                            <img src="@/assets/icon-delete.svg" alt="" @click="deleteInvoiceItem(item.id)">
+                        </tr>
+                    </table>
+
+                    <div class="flex button" @click="addNewInvoiceItem">
+                        <img src="@/assets/icon-plus.svg" alt="">
+                        Add New Item
+                    </div>
+                </div>
+            </div>
+
+            <div class="save flex">
+                <div class="left">
+                    <button class="red" @click="closeInvoice">Cancel</button>
+                </div>
+                <div class="right flex">
+                    <button class="dark-purple" @click="saveDraft">Save Draft</button>
+                    <button class="purple" @click="publishInvoice">Create Invoice</button>
+                </div>
+            </div>
         </form>
     </div>
 </template>
