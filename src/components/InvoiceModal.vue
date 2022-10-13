@@ -177,6 +177,14 @@ export default {
 
         deleteInvoiceItem(id) {
             this.invoiceItemList = this.invoiceItemList.filter(i => i.id !== id)
+        },
+
+        publishInvoice() {
+            this.invoicePending = true
+        },
+
+        saveDraft() {
+            this.invoiceDraft = true
         }
     },
     watch: {
