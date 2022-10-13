@@ -128,6 +128,7 @@
 import { mapMutations } from "vuex";
 import { uid } from "uid";
 import db from '../firebase/firebase.init.js'
+import { addDoc, collection } from "firebase/firestore";
 
 export default {
     name: "InvoiceModal",
@@ -200,9 +201,7 @@ export default {
 
             this.getInvoiceTotal()
 
-            const database = db.collection('invoices').doc()
-
-            await database.set({
+            await addDoc(collection(db, 'invoices'), {
                 id: uid(6),
                 biller_street_address: this.billerStreetAddress,
                 biller_city: this.billerCity,
@@ -226,6 +225,8 @@ export default {
                 invoice_draft: this.invoiceDraft,
                 invoice_paid: null
             })
+
+            this.TOGGLE_INVOICE()
         },
 
         submitForm() {
