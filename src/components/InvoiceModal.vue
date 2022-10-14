@@ -114,11 +114,11 @@
 
             <div class="save flex">
                 <div class="left">
-                    <button class="red" @click="closeInvoice">Cancel</button>
+                    <button type="button" class="red" @click="closeInvoice">Cancel</button>
                 </div>
                 <div class="right flex">
-                    <button class="dark-purple" @click="saveDraft">Save Draft</button>
-                    <button class="purple" @click="publishInvoice">Create Invoice</button>
+                    <button type="submit" class="dark-purple" @click="saveDraft">Save Draft</button>
+                    <button type="submit" class="purple" @click="publishInvoice">Create Invoice</button>
                 </div>
             </div>
         </form>
@@ -135,7 +135,7 @@ import Loading from "@/components/Loading.vue";
 export default {
     name: "InvoiceModal",
     data: () => ({
-        loading:null,
+        loading: null,
         dateOptions: {year: 'numeric', month: 'short', day: 'numeric'},
 
         billerStreetAddress: null,
@@ -159,7 +159,7 @@ export default {
         invoicePending: null,
         invoiceItemList: [],
     }),
-    components:{
+    components: {
         Loading,
     },
     created() {
@@ -168,7 +168,12 @@ export default {
         this.invoiceDate = new Date(this.invoiceDateUnix).toLocaleDateString('en-gb', this.dateOptions)
     },
     methods: {
-        ...mapMutations(['TOGGLE_INVOICE']),
+        ...mapMutations(['TOGGLE_INVOICE', 'TOGGLE_MODAL']),
+
+        checkClick(e) {
+            if (e.target === this.$refs.invoiceWrap) this.TOGGLE_MODAL()
+        },
+
         closeInvoice() {
             this.TOGGLE_INVOICE()
         },
