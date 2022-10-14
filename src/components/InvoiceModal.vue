@@ -2,7 +2,8 @@
     <div class="invoice-wrap flex flex-column" @click="checkClick" ref="invoiceWrap">
         <form @submit.prevent="submitForm" class="invoice-content">
             <Loading v-show="loading"/>
-            <h1>New Invoice</h1>
+            <h1 v-if="editInvoice">New Invoice</h1>
+            <h1 v-else>Edit Invoice</h1>
 
             <div class="bill-from flex flex-column">
                 <h4>Bill From</h4>
@@ -117,8 +118,11 @@
                     <button type="button" class="red" @click="closeInvoice">Cancel</button>
                 </div>
                 <div class="right flex">
-                    <button type="submit" class="dark-purple" @click="saveDraft">Save Draft</button>
-                    <button type="submit" class="purple" @click="publishInvoice">Create Invoice</button>
+                    <button type="submit" class="dark-purple" @click="saveDraft" v-if="!editInvoice">Save Draft</button>
+                    <button type="submit" class="purple" @click="publishInvoice" v-if="!editInvoice">
+                        Create Invoice
+                    </button>
+                    <button type="submit" v-if="editInvoice" class="purple">Update Invoice</button>
                 </div>
             </div>
         </form>
@@ -126,7 +130,7 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { mapMutations, mapState } from "vuex";
 import { uid } from "uid";
 import db from '../firebase/firebase.init.js'
 import { addDoc, collection } from "firebase/firestore";
@@ -247,6 +251,10 @@ export default {
         submitForm() {
             this.uploadInvoice()
         }
+    },
+
+    computed: {
+        ...mapState(['editInvoice'])
     },
     watch: {
         paymentTerms() {

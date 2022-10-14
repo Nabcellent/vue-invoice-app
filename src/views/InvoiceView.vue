@@ -15,9 +15,9 @@
                 </div>
             </div>
             <div class="right flex">
-                <button class="dark-purple" @click="toggleEditInvoice(invoice.docId)">Edit</button>
+                <button @click="toggleEditInvoice" class="dark-purple">Edit</button>
                 <button @click="deleteInvoice(invoice.docId)" class="red">Delete</button>
-                <button class="green" v-if="invoice.invoice_pending" @click="updateStatusToPaid(invoice.docId)">
+                <button @click="updateStatusToPaid(invoice.docId)" class="green" v-if="invoice.invoice_pending">
                     Mark as Paid
                 </button>
                 <button class="orange" v-if="invoice.invoice_draft || invoice.invoice_paid"
@@ -104,11 +104,16 @@ export default {
         this.getCurrentInvoice()
     },
     methods: {
-        ...mapMutations(['SET_CURRENT_INVOICE']),
+        ...mapMutations(['SET_CURRENT_INVOICE', 'TOGGLE_EDIT_INVOICE', 'TOGGLE_INVOICE']),
 
         getCurrentInvoice() {
             this.SET_CURRENT_INVOICE(this.$route.params.id)
             this.invoice = this.currentInvoice[0]
+        },
+
+        toggleEditInvoice() {
+            this.TOGGLE_EDIT_INVOICE()
+            this.TOGGLE_INVOICE()
         }
     },
     computed: {
@@ -250,7 +255,7 @@ export default {
             .billing-items {
                 padding: 32px;
                 border-radius: 20px 20px 0 0;
-                background-color: #251945;
+                background-color: #252945;
 
                 .heading {
                     color: #dfe3fa;
@@ -261,6 +266,49 @@ export default {
                         flex: 3;
                         text-align: left;
                     }
+
+                    p {
+                        flex: 1;
+                        text-align: right;
+                    }
+                }
+
+                .item {
+                    margin-bottom: 32px;
+                    font-size: 13px;
+                    color: #fff;
+
+                    &:last-child {
+                        margin-bottom: 0;
+                    }
+
+                    p:first-child {
+                        flex: 3;
+                        text-align: left;
+                    }
+
+                    p {
+                        flex: 1;
+                        text-align: right;
+                    }
+                }
+            }
+
+            .total {
+                color: #fff;
+                padding: 32px;
+                background-color: rgba(12, 14, 22, .7);
+                align-items: center;
+                border-radius: 0 0 20px 20px;
+
+                p {
+                    flex: 1;
+                    font-size: 12px;
+                }
+
+                p:nth-child(2) {
+                    font-size: 28px;
+                    text-align: right;
                 }
             }
         }
