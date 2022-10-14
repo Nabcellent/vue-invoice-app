@@ -7,7 +7,8 @@ export default createStore({
         invoices: [],
         invoiceModal: null,
         modalActive: null,
-        invoicesLoaded: null
+        invoicesLoaded: null,
+        currentInvoice: null
     },
     mutations: {
         TOGGLE_INVOICE(state) {
@@ -21,6 +22,9 @@ export default createStore({
         },
         INVOICES_LOADED(state) {
             state.invoicesLoaded = true
+        },
+        SET_CURRENT_INVOICE(state, payload) {
+            state.currentInvoice = state.invoices.filter(i => i.id === payload)
         }
     },
     actions: {
