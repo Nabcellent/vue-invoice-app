@@ -20,7 +20,7 @@
 <script>
 import Navigation from "./components/Navigation.vue";
 import InvoiceModal from "@/components/InvoiceModal.vue";
-import { mapState } from "vuex";
+import { mapActions, mapState } from "vuex";
 import Modal from "@/components/Modal.vue";
 
 export default {
@@ -33,10 +33,13 @@ export default {
         Navigation,
     },
     created() {
+        this.GET_INVOICES()
         this.checkScreen()
         window.addEventListener('resize', this.checkScreen)
     },
     methods: {
+        ...mapActions(['GET_INVOICES']),
+
         checkScreen() {
             const windowWidth = window.innerWidth
 
