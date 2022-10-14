@@ -25,11 +25,73 @@
                 </button>
             </div>
         </div>
+
+        <div class="invoice-details flex flex-column">
+            <div class="top flex">
+                <div class="left flex-column flex">
+                    <p><span>#</span>{{ invoice.id }}</p>
+                    <p>{{ invoice.product_description }}</p>
+                </div>
+                <div class="right flex flex-column">
+                    <p>{{ invoice.biller_street_address }}</p>
+                    <p>{{ invoice.biller_city }}</p>
+                    <p>{{ invoice.biller_zip_code }}</p>
+                    <p>{{ invoice.biller_country }}</p>
+                </div>
+            </div>
+
+            <div class="middle flex">
+                <div class="payment flex flex-column">
+                    <h4>Invoice Date</h4>
+                    <p>{{ invoice.invoice_date }}</p>
+
+                    <h4>Payment Date</h4>
+                    <p>{{ invoice.payment_due_date }}</p>
+                </div>
+
+                <div class="bill flex flex-column">
+                    <h4>Bill To</h4>
+                    <p>{{ invoice.client_name }}</p>
+                    <p>{{ invoice.client_street_address }}</p>
+                    <p>{{ invoice.client_city }}</p>
+                    <p>{{ invoice.client_zip_code }}</p>
+                    <p>{{ invoice.client_country }}</p>
+                </div>
+
+                <div class="send-to flex flex-column">
+                    <h4>Send To</h4>
+                    <p>{{ invoice.client_email }}</p>
+                </div>
+            </div>
+
+            <div class="bottom flex flex-column">
+                <div class="billing-items">
+                    <div class="heading flex">
+                        <p>Item Name</p>
+                        <p>QTY</p>
+                        <p>Price</p>
+                        <p>Total</p>
+                    </div>
+
+                    <div class="item flex" v-for="(item, i) in invoice.invoice_item_list" :key="i">
+                        <p>{{ item.name }}</p>
+                        <p>{{ item.qty }}</p>
+                        <p>{{ item.price }}</p>
+                        <p>{{ item.total }}</p>
+                    </div>
+                </div>
+
+                <div class="total flex">
+                    <p>Amount Due</p>
+                    <p>{{ invoice.invoice_total }}</p>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapMutations, mapState } from "vuex";
 
 export default {
     name: "InvoiceView",
@@ -55,45 +117,152 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.invoice {
-    text-decoration: none;
-    cursor: pointer;
-    gap: 1rem;
-    margin-bottom: 1rem;
-    color: #fff;
-    border-radius: 20px;
-    padding: 28px 32px;
-    background-color: #1e2139;
-    align-items: center;
-
-    span {
-        font-size: 13px;
-    }
-
-    .left {
+<style lang="scss" scoped>
+.invoice-view {
+    .nav-link {
+        margin-bottom: 32px;
         align-items: center;
-        flex-basis: 60%;
-        gap: 1rem;
+        color: #fff;
+        font-size: 12px;
 
-        span {
-            flex: 1;
-        }
-
-        .tracking-number {
-            text-transform: uppercase;
+        img {
+            margin-right: 16px;
+            width: 7px;
+            height: 10px;
         }
     }
 
-    .right {
-        gap: 1rem;
-        flex-basis: 40%;
-        align-items: center;
+    .header, .invoice-details {
+        background-color: #1e2139;
+        border-radius: 20px;
+    }
 
-        .price {
+    .header {
+        align-items: center;
+        padding: 24px 32px;
+        font-size: 12px;
+
+        .left {
+            align-items: center;
+
+            span {
+                color: #dfe3fa;
+                margin-right: 16px;
+            }
+        }
+
+        .right {
             flex: 1;
-            font-size: 1rem;
-            font-weight: 600;
+            justify-content: flex-end;
+
+            button {
+                color: #fff;
+            }
+        }
+    }
+
+    .invoice-details {
+        padding: 48px;
+        margin-top: 24px;
+
+        .top {
+            div {
+                color: #dfe3fa;
+                flex: 1;
+            }
+
+            .left {
+                font-size: 12px;
+
+                p:first-child {
+                    font-size: 14px;
+                    text-transform: uppercase;
+                    color: #fff;
+                    margin-bottom: 8px;
+                }
+
+                p:nth-child(2) {
+                    font-size: 16px;
+                }
+
+                span {
+                    color: #888eb0;
+                }
+            }
+
+            .right {
+                font-size: 12px;
+                align-items: flex-end;
+            }
+        }
+
+        .middle {
+            margin-top: 50px;
+            color: #dfe3fa;
+            gap: 16px;
+
+            h4 {
+                font-size: 12px;
+                font-weight: 400;
+                margin-bottom: 12px;
+            }
+
+            p {
+                font-size: 16px;
+            }
+
+            .bill, .payment {
+                flex: 1
+            }
+
+            .payment {
+                h4:nth-child(3) {
+                    margin-top: 32px;
+                }
+
+                p {
+                    font-weight: 600;
+                }
+            }
+
+            .bill {
+                p:nth-child(2) {
+                    font-size: 16px;
+                }
+
+                p:nth-child(3) {
+                    margin-top: auto;
+                }
+
+                p {
+                    font-size: 12px;
+                }
+            }
+
+            .send-to {
+                flex: 2;
+            }
+        }
+
+        .bottom {
+            margin-top: 50px;
+
+            .billing-items {
+                padding: 32px;
+                border-radius: 20px 20px 0 0;
+                background-color: #251945;
+
+                .heading {
+                    color: #dfe3fa;
+                    font-size: 12px;
+                    margin-bottom: 32px;
+
+                    p:first-child {
+                        flex: 3;
+                        text-align: left;
+                    }
+                }
+            }
         }
     }
 }
