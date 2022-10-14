@@ -130,10 +130,10 @@
 </template>
 
 <script>
-import { mapMutations, mapState } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
 import { uid } from "uid";
 import db from '../firebase/firebase.init.js'
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import Loading from "@/components/Loading.vue";
 
 export default {
@@ -142,6 +142,7 @@ export default {
         loading: null,
         dateOptions: {year: 'numeric', month: 'short', day: 'numeric'},
 
+        docId: null,
         billerStreetAddress: null,
         billerCity: null,
         billerZipCode: null,
@@ -168,11 +169,39 @@ export default {
     },
     created() {
         //  Gets current date for invoice date field.
-        this.invoiceDateUnix = Date.now()
-        this.invoiceDate = new Date(this.invoiceDateUnix).toLocaleDateString('en-gb', this.dateOptions)
+        if (!this.editInvoice) {
+            this.invoiceDateUnix = Date.now()
+            this.invoiceDate = new Date(this.invoiceDateUnix).toLocaleDateString('en-gb', this.dateOptions)
+        }
+
+        if (this.editInvoice) {
+            const invoice = this.currentInvoice[0]
+            this.docId = invoice.docId
+            this.billerStreetAddress = invoice.biller_street_address
+            this.billerCity = invoice.biller_city
+            this.billerZipCode = invoice.biller_zip_code
+            this.billerCountry = invoice.biller_country
+            this.clientName = invoice.client_name
+            this.clientEmail = invoice.client_email
+            this.clientStreetAddress = invoice.client_street_address
+            this.clientCity = invoice.client_city
+            this.clientZipCode = invoice.client_zip_code
+            this.clientCountry = invoice.client_country
+            this.invoiceDateUnix = invoice.invoice_date_unix
+            this.invoiceDate = invoice.invoice_date
+            this.paymentTerms = invoice.payment_terms
+            this.paymentDueDateUnix = invoice.payment_due_date_unix
+            this.paymentDueDate = invoice.payment_due_date
+            this.productDescription = invoice.product_description
+            this.invoicePending = invoice.invoice_pending
+            this.invoiceDraft = invoice.invoice_draft
+            this.invoiceItemList = invoice.invoice_item_list
+            this.invoiceTotal = invoice.invoice_total
+        }
     },
     methods: {
         ...mapMutations(['TOGGLE_INVOICE', 'TOGGLE_MODAL', 'TOGGLE_EDIT_INVOICE']),
+        ...mapActions(['UPDATE_INVOICE']),
 
         checkClick(e) {
             if (e.target === this.$refs.invoiceWrap) this.TOGGLE_MODAL()
@@ -211,7 +240,7 @@ export default {
             this.invoiceDraft = true
         },
 
-        async uploadInvoice() {
+        async createInvoice() {
             if (this.invoiceItemList.length <= 0) {
                 return alert('Please ensure you fill out work items')
             }
@@ -250,13 +279,56 @@ export default {
             this.loading = false
         },
 
+        async updateInvoice() {
+            if (this.invoiceItemList.length <= 0) {
+                return alert('Please ensure you fill out work items')
+            }
+
+            this.loading = true
+
+            this.getInvoiceTotal()
+
+            const docRef = doc(db, 'invoices', this.docId)
+
+            await updateDoc(docRef, {
+                biller_street_address: this.billerStreetAddress,
+                biller_city: this.billerCity,
+                biller_zip_code: this.billerZipCode,
+                biller_country: this.billerCountry,
+                client_name: this.clientName,
+                client_email: this.clientEmail,
+                client_street_address: this.clientStreetAddress,
+                client_city: this.clientCity,
+                client_zip_code: this.clientZipCode,
+                client_country: this.clientCountry,
+                payment_terms: this.paymentTerms,
+                payment_due_date: this.paymentDueDate,
+                payment_due_date_unix: this.paymentDueDateUnix,
+                product_description: this.productDescription,
+                invoice_item_list: this.invoiceItemList,
+                invoice_total: this.invoiceTotal,
+            })
+
+            this.UPDATE_INVOICE({
+                docId: this.docId,
+                routeId: this.$route.params.id
+            })
+
+            this.loading = false
+        },
+
         submitForm() {
-            this.uploadInvoice()
+            if (this.editInvoice) {
+                this.updateInvoice()
+                return
+            }
+
+            this.createInvoice()
         }
     },
 
     computed: {
-        ...mapState(['editInvoice'])
+        ...mapState(['editInvoice', 'currentInvoice'])
     },
     watch: {
         paymentTerms() {

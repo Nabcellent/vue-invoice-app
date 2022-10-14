@@ -117,7 +117,12 @@ export default {
         }
     },
     computed: {
-        ...mapState(['currentInvoice'])
+        ...mapState(['currentInvoice', 'editInvoice'])
+    },
+    watch: {
+        editInvoice() {
+            if (!this.editInvoice) this.invoice = this.currentInvoice[0]
+        }
     }
 }
 </script>
