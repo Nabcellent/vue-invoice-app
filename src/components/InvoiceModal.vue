@@ -2,7 +2,7 @@
     <div class="invoice-wrap flex flex-column" @click="checkClick" ref="invoiceWrap">
         <form @submit.prevent="submitForm" class="invoice-content">
             <Loading v-show="loading"/>
-            <h1 v-if="editInvoice">New Invoice</h1>
+            <h1 v-if="!editInvoice">New Invoice</h1>
             <h1 v-else>Edit Invoice</h1>
 
             <div class="bill-from flex flex-column">
@@ -172,7 +172,7 @@ export default {
         this.invoiceDate = new Date(this.invoiceDateUnix).toLocaleDateString('en-gb', this.dateOptions)
     },
     methods: {
-        ...mapMutations(['TOGGLE_INVOICE', 'TOGGLE_MODAL']),
+        ...mapMutations(['TOGGLE_INVOICE', 'TOGGLE_MODAL', 'TOGGLE_EDIT_INVOICE']),
 
         checkClick(e) {
             if (e.target === this.$refs.invoiceWrap) this.TOGGLE_MODAL()
@@ -180,6 +180,8 @@ export default {
 
         closeInvoice() {
             this.TOGGLE_INVOICE()
+
+            if (this.editInvoice) this.TOGGLE_EDIT_INVOICE()
         },
 
         addNewInvoiceItem() {
