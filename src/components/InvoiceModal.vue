@@ -288,9 +288,7 @@ export default {
 
             this.getInvoiceTotal()
 
-            const docRef = doc(db, 'invoices', this.docId)
-
-            await updateDoc(docRef, {
+            await updateDoc(doc(db, 'invoices', this.docId), {
                 biller_street_address: this.billerStreetAddress,
                 biller_city: this.billerCity,
                 biller_zip_code: this.billerZipCode,
