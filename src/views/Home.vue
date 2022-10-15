@@ -7,13 +7,13 @@
             </div>
             <div class="right flex">
                 <div class="filter flex" @click="toggleFilterMenu">
-                    <span>Filter by status</span>
+                    <span>Filter by status<span v-if="filteredInvoice">: {{ filteredInvoice }}</span></span>
                     <img src="@/assets/icon-arrow-down.svg" alt="">
                     <ul class="filter-menu" v-show="filterMenu">
-                        <li>Draft</li>
-                        <li>Pending</li>
-                        <li>Paid</li>
-                        <li>Clear Filter</li>
+                        <li @click="filteredInvoices">Draft</li>
+                        <li @click="filteredInvoices">Pending</li>
+                        <li @click="filteredInvoices">Paid</li>
+                        <li @click="filteredInvoices">Clear Filter</li>
                     </ul>
                 </div>
                 <div class="button flex" @click="newInvoice">
@@ -26,7 +26,7 @@
         </div>
 
         <div v-if="invoices.length > 0">
-            <Invoice v-for="(invoice, i) in invoices" :key="i" :invoice="invoice"/>
+            <Invoice v-for="(invoice, i) in filteredData" :key="i" :invoice="invoice"/>
         </div>
         <div v-else class="empty flex flex-column">
             <img src="@/assets/illustration-empty.svg" alt="">
@@ -43,7 +43,8 @@ import Invoice from "@/components/Invoice.vue";
 export default {
     name: "Home",
     data: () => ({
-        filterMenu: null
+        filterMenu: null,
+        filteredInvoice: null
     }),
     components: {Invoice},
     methods: {
@@ -54,10 +55,29 @@ export default {
 
         toggleFilterMenu() {
             this.filterMenu = !this.filterMenu
+        },
+
+        filteredInvoices(e) {
+            if (e.target.innerText === 'Clear Filter') {
+                this.filteredInvoice = null
+                return
+            }
+
+            this.filteredInvoice = e.target.innerText
         }
     },
     computed: {
-        ...mapState(['invoices'])
+        ...mapState(['invoices']),
+
+        filteredData() {
+            return this.invoices.filter(i => {
+                if (this.filteredInvoice === 'Draft') return i.invoice_draft === true
+                if (this.filteredInvoice === 'Pending') return i.invoice_pending === true
+                if (this.filteredInvoice === 'Paid') return i.invoice_paid === true
+                
+                return i
+            })
+        }
     }
 };
 </script>
