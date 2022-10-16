@@ -10,28 +10,22 @@
     </div>
 </template>
 
-<script>
-import { mapMutations, mapState } from "vuex";
+<script setup>
+import { useStore } from "vuex";
+import { computed } from "vue";
 
-export default {
-    name: "Modal",
-    methods: {
-        ...mapMutations(['TOGGLE_MODAL', 'TOGGLE_INVOICE', 'TOGGLE_EDIT_INVOICE']),
+const store = useStore()
+const editInvoice = computed(() => store.state.editInvoice)
 
-        closeModal() {
-            this.TOGGLE_MODAL()
-        },
+const closeModal = () => {
+    store.commit('TOGGLE_MODAL')
+}
 
-        closeInvoice() {
-            this.TOGGLE_MODAL()
-            this.TOGGLE_INVOICE()
+const closeInvoice = () => {
+    store.commit('TOGGLE_MODAL')
+    store.commit('TOGGLE_INVOICE')
 
-            if(this.editInvoice) this.TOGGLE_EDIT_INVOICE()
-        }
-    },
-    computed: {
-        ...mapState(['editInvoice'])
-    }
+    if (editInvoice.value) store.commit('TOGGLE_EDIT_INVOICE')
 }
 </script>
 

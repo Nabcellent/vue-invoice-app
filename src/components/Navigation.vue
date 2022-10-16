@@ -4,12 +4,6 @@
     </header>
 </template>
 
-<script>
-export default {
-    name: 'Navigation'
-}
-</script>
-
 <style lang="scss" scoped>
 header {
     z-index: 99;
