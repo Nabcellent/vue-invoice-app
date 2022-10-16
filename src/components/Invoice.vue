@@ -19,11 +19,8 @@
     </router-link>
 </template>
 
-<script>
-export default {
-    name: "Invoice",
-    props: ['invoice']
-}
+<script setup>
+defineProps(['invoice'])
 </script>
 
 <style lang="scss">
